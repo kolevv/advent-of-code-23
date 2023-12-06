@@ -12,16 +12,37 @@ def get_neighbours(array, row, column):
             if (dy != 0 or dx != 0):
                 adjacent.append(array[row+dy][column + dx])
 
-    print("Neighbours:")
-    print(adjacent)
-    return dataInput
+    return adjacent
+
+
+def is_valid_digit(array, row, column):
+    neighbours = get_neighbours(array, row, column)
+    for el in neighbours:
+        if (is_symbol(el)):
+            return True
+    return False
+
+
+def find_number(array):
+    num_buffer = []
+    for row in array:
+
+        iterator = iter(row)
+        i = next(iterator, False)
+        while (i):
+            i = next(iterator, False)
+            print("LOOPING", i)
+            if (i.isdigit()):
+                while (i.isdigit() and i):
+                    num_buffer.append(i)
+                    i = next(iterator, False)
+                print(num_buffer)
+
+        print("DONE LOOPING")
 
 
 dataInput = []
-testInpuit = [["a", "b", "c", "d"],
-              ["1", "2", "3", "4"],
-              ["+", "-", "!", "?"]
-              ]
+
 
 inputFile = open("3/input", "r")
 # Build a 2D array from the input file
@@ -29,4 +50,4 @@ for line in inputFile.readlines():
     dataInput.append(list(line))
 
 # get_neighbours(dataInput, 0, 28)
-get_neighbours(testInpuit, 1, 2)
+find_number(dataInput)

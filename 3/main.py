@@ -29,36 +29,39 @@ def convert_buffer_to_int(number_buffer):
 
 
 def parse(array):
+
+    writeList = []
     sum_of_valid_numbers = 0
     for row_idx, row in enumerate(array):
-        index = 0
-        while (index < len(row) - 1):
+        column = 0
+        while (column < len(row) - 1):
             valid_flag = False
             num_buffer = []
-            if (row[index].isdigit()):
-                while (row[index].isdigit() and index < len(row) - 1):
-                    if (is_valid_digit(array, row_idx, index)):
+            if (row[column].isdigit()):
+                while True:
+                    if (column >= len(row) or not row[column].isdigit()):
+                        break
+                    if (is_valid_digit(array, row_idx, column)):
                         valid_flag = True
-                    num_buffer.append(row[index])
-                    index += 1
+                    num_buffer.append(row[column])
+                    column += 1
+            else:
+                column += 1
+
             if (num_buffer and valid_flag):
-                print("FOUND VALID NUMBER:",
-                      convert_buffer_to_int(num_buffer))
+                writeList.append("FOUND VALID NUMBER: {}\n".format(
+                    convert_buffer_to_int(num_buffer)))
                 sum_of_valid_numbers += convert_buffer_to_int(num_buffer)
 
-            index += 1
     print(sum_of_valid_numbers)
 
 
 dataInput = []
-# inputFile = open("3/input", "r")
-inputFile = open("3/test_input", "r")
+inputFile = open("3/input", "r")
 
 # Build a 2D array from the input file
 for line in inputFile.readlines():
     stripped_line = line.strip("\n")
-    print(stripped_line)
-    add_line = list(stripped_line)
-    dataInput.append(add_line)
+    dataInput.append(list(stripped_line))
 
 parse(dataInput)

@@ -3,6 +3,10 @@ def is_symbol(char):
     return not (char.isdigit() or char == '.')
 
 
+def is_gear(char):
+    return char == '*'
+
+
 def get_neighbours(array, row, column):
     y = len(dataInput)
     x = len(dataInput[0])  # Evey line is the same length
@@ -30,7 +34,6 @@ def convert_buffer_to_int(number_buffer):
 
 def parse(array):
 
-    writeList = []
     sum_of_valid_numbers = 0
     for row_idx, row in enumerate(array):
         column = 0
@@ -49,15 +52,25 @@ def parse(array):
                 column += 1
 
             if (num_buffer and valid_flag):
-                writeList.append("FOUND VALID NUMBER: {}\n".format(
-                    convert_buffer_to_int(num_buffer)))
                 sum_of_valid_numbers += convert_buffer_to_int(num_buffer)
 
     print(sum_of_valid_numbers)
 
 
+def solve_part_2(array):
+    for y in range(len(array)):
+        x = 0
+        while (x < len(array[0])):
+
+            char = array[y][x]
+            if is_gear(char):
+                print("Found gear at ", x, y)
+            x += 1
+
+
 dataInput = []
-inputFile = open("3/input", "r")
+# inputFile = open("3/input", "r")
+inputFile = open("3/test_input", "r")
 
 # Build a 2D array from the input file
 for line in inputFile.readlines():
@@ -65,3 +78,4 @@ for line in inputFile.readlines():
     dataInput.append(list(stripped_line))
 
 parse(dataInput)
+solve_part_2(dataInput)

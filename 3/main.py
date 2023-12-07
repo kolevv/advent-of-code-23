@@ -1,6 +1,31 @@
+dataInput = []
+# inputFile = open("3/input", "r")
+inputFile = open("3/test_input", "r")
+
+# Build a 2D array from the input file
+for line in inputFile.readlines():
+    stripped_line = line.strip("\n")
+    dataInput.append(list(stripped_line))
+
 
 def is_symbol(char):
     return not (char.isdigit() or char == '.')
+
+
+def get_adjacent_numbers(row, column):
+    processed_locations = set()
+    max_rows = len(dataInput)
+    max_columns = len(dataInput[0])
+    for d_row in range(-1 if (row > 0) else 0, 2 if (row < max_rows) else 1):
+        for d_column in range(-1 if column > 0 else 0, 2 if (column < max_columns) else 1):
+            if (d_row != 0 or d_column != 0):
+                element = dataInput[row+d_row][column+d_column]
+                print("Found adjacent",
+                      dataInput[row+d_row][column+d_column])
+                if (element not in processed_locations):
+                    processed_locations.add(element)
+                    if (element.isdigit()):
+                        print("Found digit!", element)
 
 
 def get_neighbours(array, row, column):
@@ -28,9 +53,8 @@ def convert_buffer_to_int(number_buffer):
     return result
 
 
-def parse(array):
+def solve_part_1(array):
 
-    writeList = []
     sum_of_valid_numbers = 0
     for row_idx, row in enumerate(array):
         column = 0
@@ -49,19 +73,20 @@ def parse(array):
                 column += 1
 
             if (num_buffer and valid_flag):
-                writeList.append("FOUND VALID NUMBER: {}\n".format(
-                    convert_buffer_to_int(num_buffer)))
                 sum_of_valid_numbers += convert_buffer_to_int(num_buffer)
 
     print(sum_of_valid_numbers)
 
 
-dataInput = []
-inputFile = open("3/input", "r")
+def solve_part_2(array):
+    for y in range(len(array)):
+        x = 0
+        while (x < len(array[0])):
+            if array[y][x] == "*":
+                # print("Looking at gear at ", x, y)
+                get_adjacent_numbers(y, x)
+            x += 1
 
-# Build a 2D array from the input file
-for line in inputFile.readlines():
-    stripped_line = line.strip("\n")
-    dataInput.append(list(stripped_line))
 
-parse(dataInput)
+solve_part_1(dataInput)
+solve_part_2(dataInput)

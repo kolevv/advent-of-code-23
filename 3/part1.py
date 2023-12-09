@@ -1,10 +1,15 @@
+dataInput = []
+# inputFile = open("3/input", "r")
+inputFile = open("3/test_input", "r")
+
+# Build a 2D array from the input file
+for line in inputFile.readlines():
+    stripped_line = line.strip("\n")
+    dataInput.append(list(stripped_line))
+
 
 def is_symbol(char):
     return not (char.isdigit() or char == '.')
-
-
-def is_gear(char):
-    return char == '*'
 
 
 def get_neighbours(array, row, column):
@@ -32,7 +37,7 @@ def convert_buffer_to_int(number_buffer):
     return result
 
 
-def parse(array):
+def solve_part_1(array):
 
     sum_of_valid_numbers = 0
     for row_idx, row in enumerate(array):
@@ -57,25 +62,4 @@ def parse(array):
     print(sum_of_valid_numbers)
 
 
-def solve_part_2(array):
-    for y in range(len(array)):
-        x = 0
-        while (x < len(array[0])):
-
-            char = array[y][x]
-            if is_gear(char):
-                print("Found gear at ", x, y)
-            x += 1
-
-
-dataInput = []
-# inputFile = open("3/input", "r")
-inputFile = open("3/test_input", "r")
-
-# Build a 2D array from the input file
-for line in inputFile.readlines():
-    stripped_line = line.strip("\n")
-    dataInput.append(list(stripped_line))
-
-parse(dataInput)
-solve_part_2(dataInput)
+solve_part_1(dataInput)

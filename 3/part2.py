@@ -7,8 +7,8 @@ class Direction(Enum):
 
 
 dataInput = []
-# inputFile = open("3/input", "r")
-inputFile = open("3/test_input", "r")
+inputFile = open("3/input", "r")
+# inputFile = open("3/test_input", "r")
 
 # Build a 2D array from the input file
 for line in inputFile.readlines():
@@ -16,105 +16,64 @@ for line in inputFile.readlines():
     dataInput.append(list(stripped_line))
 
 
-def get_neighbours(array, row, column):
-    y = len(dataInput)
-    x = len(dataInput[0])  # Evey line is the same length
-    adjacent = []
-    for dy in range(-1 if (row > 0) else 0, 2 if (row < y - 1) else 1):
-        for dx in range(-1 if column > 0 else 0, 2 if (column < x-1) else 1):
-            if (dy != 0 or dx != 0):
-                adjacent.append(array[row+dy][column + dx])
-
-    return adjacent
-
-
-def find_full_number(y_pos, start_idx):
+def find_num_sequence(y_pos, start_idx):
     number_bufer = [dataInput[y_pos][start_idx]]
+    processed_x_positions = {start_idx}
     for direction in (Direction):
-        length = len(dataInput[y_pos])
-        # print("Looking ", direction.name)
+        length = len(dataInput[y_pos]) - 1
         next_idx = start_idx + direction.value
         while True:
+            if next_idx > length:
+                break
             observed_element = dataInput[y_pos][next_idx]
             if next_idx < 0 or next_idx > length or not observed_element.isnumeric():
-                # print("Terminating looking", direction.name)
                 break
+            processed_x_positions.add(next_idx)
             if direction.name == "LEFT":
                 number_bufer.insert(0, observed_element)
             else:
                 number_bufer.append(observed_element)
             next_idx += direction.value
-    print(number_bufer)
+
+    return number_bufer, processed_x_positions
 
 
 def get_adjacent_numbers(row, column):
     y = len(dataInput)
     x = len(dataInput[0])  # Evey line is the same length
-    adjacent = []
+    adjacent_nums = []
     for dy in range(-1 if (row > 0) else 0, 2 if (row < y - 1) else 1):
+        processed_x_positions = set()
         for dx in range(-1 if column > 0 else 0, 2 if (column < x-1) else 1):
             if (dy != 0 or dx != 0):
                 element = dataInput[row+dy][column + dx]
-                if (element.isnumeric()):
-                    print("Found numeric neighbour", element)
-                    find_full_number(row+dy, column+dx)
-
-    return adjacent
-
-# def get_adjacent_numbers(row, column):
-#     processed_locations = set()
-#     max_rows = len(dataInput)
-#     max_columns = len(dataInput[0])
-#     for d_row in range(-1 if (row > 0) else 0, 2 if (row < max_rows) else 1):
-#         for d_column in range(-1 if column > 0 else 0, 2 if (column < max_columns) else 1):
-#             if (d_row != 0 or d_column != 0):
-#                 element = dataInput[row+d_row][column+d_column]
-#                 print("Found adjacent",
-#                       dataInput[row+d_row][column+d_column])
-#                 if (element not in processed_locations):
-#                     processed_locations.add(element)
-#                     if (element.isdigit()):
-#                         print("Found digit!", element)
+                if (element.isnumeric() and column+dx not in processed_x_positions):
+                    number, processed_x = find_num_sequence(
+                        row+dy, column+dx)
+                    processed_x_positions = processed_x_positions | processed_x
+                    adjacent_nums.append(number)
+    return adjacent_nums
 
 
-def get_full_number(y_pos, start_idx):
-    end_idx = start_idx
-    value_buf = []
-    while end_idx < len(dataInput[y_pos]) and dataInput[y_pos][end_idx].isnumeric():
-        value_buf.append(dataInput[y_pos][end_idx])
-        end_idx += 1
-    return end_idx - 1, int("".join(value_buf))
-
-
-# def solve_part_2(array):
-
-#     full_numbers = list()
-#     for y in range(len(array)):
-#         x = 0
-#         while (x < len(array[0])):
-#             if array[y][x].isnumeric():
-#                 endIdx, value = get_full_number(y, x)
-#                 full_numbers.append({
-#                     "start": (y, x),
-#                     "end": (y, endIdx),
-#                     "value": value
-
-#                 })
-#                 x = endIdx
-#                 # print("Looking at gear at ", x, y)
-#                 # get_adjacent_numbers(y, x)
-#             x += 1
-#     print(full_numbers)
+def calc_gear_ratio(part_numbers_list):
+    converted_list = [int("".join(part)) for part in part_numbers_list]
+    if len(converted_list) != 2:
+        raise ValueError(
+            "Something weird happened when converting part numbers list buffer to numbers")
+    return converted_list[0] * converted_list[1]
 
 
 def solve_part_2(array):
+    gear_ratio_sum = 0
     for y in range(len(array)):
         x = 0
         while (x < len(array[0])):
             if array[y][x] == "*":
-                # print("Looking at gear at ", x, y)
-                get_adjacent_numbers(y, x)
+                part_numbers = get_adjacent_numbers(y, x)
+                if len(part_numbers) == 2:
+                    gear_ratio_sum += calc_gear_ratio(part_numbers)
             x += 1
+    print(gear_ratio_sum)
 
 
 solve_part_2(dataInput)

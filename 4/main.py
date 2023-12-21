@@ -1,12 +1,16 @@
-dataInput = {}
 
-# inputFile = open("4/test_input", "r")
-inputFile = open("4/input", "r")
-lines = inputFile.readlines()
 
-for line in lines:
-    line = line.strip("\n").split(":")
-    dataInput.update({line[0]: line[1]})
+def init():
+    dataInput = {}
+    inputFile = open("4/test_input", "r")
+    # inputFile = open("4/input", "r")
+    lines = inputFile.readlines()
+
+    for line in lines:
+        line = line.strip("\n").split(":")
+        dataInput.update({line[0]: line[1]})
+
+    return dataInput
 
 
 def find_winners(numbers):
@@ -25,6 +29,14 @@ def find_winners(numbers):
     return (results)
 
 
+def generate_copies(card, matches, max_len):
+    number_of_copies = sum(matches.values())
+    # TODO: Ensure number of copies not going over max_Len
+    print("Processing ", card, " should have ", number_of_copies, " copies")
+
+    return
+
+
 def calculate_score(matches):
     total = 1
     if (not matches):
@@ -38,14 +50,14 @@ def calculate_score(matches):
 
 
 def parse(cards):
-    output = open("./output", "a")
+    output = open("./4/output", "a")
     full_total = 0
+    card_list_length = len(cards)
     for card, numbers in cards.items():
 
         numbers = numbers.strip()
         card_winners = find_winners(numbers)
-        # print("%d has %d winning numbers",
-        #   (card, len(card_winners.values())))
+        generate_copies(card, card_winners)
         card_total = calculate_score(card_winners)
         full_total += card_total
         out_string = ""
@@ -59,4 +71,5 @@ def parse(cards):
     print(full_total)
 
 
-parse(dataInput)
+input = init()
+parse(input)
